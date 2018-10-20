@@ -1,13 +1,14 @@
 #!/bin/sh
-
 TODAY=`date "+%w"`
 ACCESS_TOKEN=${1}
-REPO_LIST=`curl -u :${ACCESS_TOKEN} https://api.github.com/user/repos | jq '.[].full_name'`
 
-for owner_repo in ${REPO_LIST[@]}
-do
-  echo "${owner_repo}"
-  OWNER_REPO_URL=`echo ${owner_repo} | sed 's/"//g'`
- # curl -u :${ACCESS_TOKEN} https://api.github.com/repos/${OWNER_REPO_URL}/stats/punch_card | jq '.['${TODAY}'] | .[2]'
- curl -u :${ACCESS_TOKEN} https://api.github.com/repos/${OWNER_REPO_URL}/stats/punch_card | jq '.[] | select(.[0]=='${TODAY}') | .[2]'
-done
+LATEST_COMMIT_DATE=`curl -u :${ACCESS_TOKEN} https://api.github.com/users/anntoque/events | \
+jq '.[0] | select(.["type"]=="PushEvent")' | jq '.["created_at"]' | cut -c 2-11`
+
+CURRENT_DATE=`date "+%Y-%m-%d"`
+
+if [ "${LATEST_COMMIT_DATE}" = "${CURRENT_DATE}" ]; then
+  echo "今日もcommitしたな。お疲れ様"
+else
+  echo "なぜcomiitしない！！"
+fi
