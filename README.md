@@ -8,5 +8,5 @@
 
 ## インストール・使用方法
 ```
-$ git clone git@github.com:qw3rtman/git-fire.git
+$ git clone git@github.com:anntoque/commit-gypsum.git
 ````
