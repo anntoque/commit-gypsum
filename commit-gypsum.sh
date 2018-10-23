@@ -1,10 +1,15 @@
 #!/bin/sh
+
+. ./config.sh
+echo ${GITHUB_TOKEN}
+echo ${SLACK_WEBHOOK}
+
 TODAY=`date "+%w"`
 ACCESS_TOKEN=${1}
 CURRENT_DATE=`date "+%Y-%m-%d"`
 
 COMMITED_MESSAGE="毎日1commit…その積み重ねが大事！お疲れ様自分！"
-NOT_COMMITED_MESSAGE="なぜcommitしないいいいいいいい今すぐしろおおおおおおお"
+NOT_COMMITED_MESSAGE="なぜcommitしないいいいいいいい！今すぐしろおおおおおおお！！"
 WEBHOOK_URL=${2}
 LATEST_COMMIT_DATE=`curl -u :${ACCESS_TOKEN} https://api.github.com/users/anntoque/events | \
 jq '.[0] | select(.["type"]=="PushEvent")' | jq '.["created_at"]' | cut -c 2-11`
