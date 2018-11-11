@@ -1,5 +1,5 @@
 #!/bin/sh
-. ./config.sh
+. `dirname ${0}`/config.sh
 
 TODAY=`date "+%w"`
 ACCESS_TOKEN=${GITHUB_TOKEN}
