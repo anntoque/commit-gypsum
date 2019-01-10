@@ -18,3 +18,4 @@ else
   curl -X POST --data-urlencode "payload={\"channel\": \"#test-webhook\", \"username\":\"webhookbot\",\
    \"text\": \"${NOT_COMMITED_MESSAGE}\", \"icon_emoji\": \":warning:\"}" ${WEBHOOK_URL}
 fi
+
