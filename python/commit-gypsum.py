@@ -4,7 +4,7 @@ import requests
 from datetime import datetime
 import datetime as dt
 
-now = dt.datetime.now()
+now = dt.date.today()
 current_date = now.strftime("%Y/%m/%d %H:%M:%S")
 slack = slackweb.Slack(url=config.SLACK_WEBHOOK)
 github_token = config.GITHUB_TOKEN
@@ -25,12 +25,21 @@ def get_last_commit(events):
 
     return event_jp_date
 
-def send_message():
-    slack_message = "pythonからslackpytttt" + current_date
+def fix_message(from_datetime):
+    from_date = from_datetime.date()
+    if from_date == now: 
+        slack_message = "毎日1commit…その積み重ねが大事！お疲れ様自分！"
+    else:
+        slack_message = "なぜcommitしないいいいいいいい！今すぐしろおおおおおおお！！"
+    
+    return slack_message
+
+def send_message(message_text):
+    slack_message = message_text + current_date
     slack.notify(text=slack_message)
 
 if __name__ == '__main__':
     events = get_github_events()
-    # last_commit = get_last_commit(events)
     last_commit_date = get_last_commit(events)
-    send_message()
+    message_text = fix_message(last_commit_date)
+    send_message(message_text)
