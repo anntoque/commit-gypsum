@@ -56,7 +56,7 @@ def fix_message(from_datetime):
 @app.route("/callback", methods=['POST'])
 def callback():
     # ヘッダーの値を取得
-    signature = request.headers['X-Line-Sigunature']
+    signature = request.headers['X-Line-Signature']
 
     # ボディを取得
     body = request.get_date(as_text=True)
