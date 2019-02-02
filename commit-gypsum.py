@@ -59,6 +59,7 @@ def fix_message(from_datetime):
 def callback():
     # ヘッダーの値を取得
     signature = request.headers['X-Line-Signature']
+    print(signature)
 
     # ボディを取得
     body = request.get_data(as_text=True)
