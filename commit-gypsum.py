@@ -1,5 +1,7 @@
-import requests
 import os
+import sys
+import logging
+import requests
 from datetime import datetime
 import datetime as dt
 from flask import Flask, request, abort
@@ -60,9 +62,8 @@ def callback():
 
     # ボディを取得
     body = request.get_data(as_text=True)
-    #app.logger.info("Request body" + body)
-
-    #
+    app.logger.info("Request body: " + body)
+    
     try: 
         handler.handle(body, signature)
     except InvalidSignatureError:
