@@ -73,7 +73,7 @@ def callback():
 def handle_message(event):
     line_bot_api.reply_message(
         event.reply_token,
-        TextMessage(text=event.message.text))
+        TextSendMessage(text=event.message.text))
 
 if __name__ == '__main__':
     #events = get_github_events()
