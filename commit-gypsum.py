@@ -79,4 +79,5 @@ if __name__ == '__main__':
     #events = get_github_events()
     #last_commit_date = get_last_commit(events)
     #message_text = fix_message(last_commit_date)
-    app.run()
+    port = int(os.getenv("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)
