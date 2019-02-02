@@ -1,14 +1,34 @@
-import slackweb
 import config
 import requests
+import os
 from datetime import datetime
 import datetime as dt
+from flask import Flask, request, abort
+from linebot import (
+    LineBotApi, WebhookHandler
+)
+from linebot.exceptions import (
+    InvalidSignatureError
+)
+from linebot.models import (
+    FollowEvent, MessageEvent, TextMessage, TextSendMessage, ImageMessage,
+    ImageSendMessage, TemplateSendMessage, ButtonsTemplate, PostbackTemplateAction,
+    MessageTemplateAction, URITemplateAction
+)
+
+app = Flask(__name__)
+
+LINE_CHANNEL_ACCESS_TOKEN = os.environ["LINE_CHANNEL_ACCESS_TOKEN"]
+LINE_CHANNEL_SECRET = os.environ["LINE_CHANNEL_SECRET"]
+
+line_bot_api = LineBotApi(LINE_CHANNEL_ACCESS_TOKEN)
+handler = WebhookHandler(LINE_CHANNEL_SECRET)
+
+github_token = os.environ["GITHUB_TOKEN"]
+headers = {'Authorization': 'token ' + github_token}
 
 now = dt.date.today()
 current_date = now.strftime("%Y/%m/%d %H:%M:%S")
-slack = slackweb.Slack(url=config.SLACK_WEBHOOK)
-github_token = config.GITHUB_TOKEN
-headers = {'Authorization': 'token ' + github_token}
 
 def get_github_events(): 
     response = requests.get(
@@ -34,12 +54,30 @@ def fix_message(from_datetime):
     
     return slack_message
 
-def send_message(message_text):
-    slack_message = message_text + current_date
-    slack.notify(text=slack_message)
+@app.route("/callback", methods=['POST'])
+def callback():
+    # ヘッダーの値を取得
+    signature = request.headers['X-Line-Sigunature']
+
+    # ボディを取得
+    body = request.get_date(as_text=True)
+    #app.logger.info("Request body" + body)
+
+    #
+    try: 
+        handler.handle(body, signature)
+    except InvalidSignatureError:
+        abort(400)
+    return 'OK'
+
+@handler.add(MessageEvent, message=TextMessage)
+def handle_message(event):
+    line_bot_api.reply_message(
+        event.reply_token,
+        TextMessage(text=event.message.text))
 
 if __name__ == '__main__':
-    events = get_github_events()
-    last_commit_date = get_last_commit(events)
-    message_text = fix_message(last_commit_date)
-    send_message(message_text)
+    #events = get_github_events()
+    #last_commit_date = get_last_commit(events)
+    #message_text = fix_message(last_commit_date)
+    app.run()
