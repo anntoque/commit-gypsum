@@ -72,13 +72,13 @@ def callback():
 
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
+    events = get_github_events()
+    last_commit_date = get_last_commit(events)
+    message_text = fix_message(last_commit_date)
     line_bot_api.reply_message(
         event.reply_token,
-        TextSendMessage(text=event.message.text))
+        TextSendMessage(text=message_text))
 
 if __name__ == '__main__':
-    #events = get_github_events()
-    #last_commit_date = get_last_commit(events)
-    #message_text = fix_message(last_commit_date)
     port = int(os.getenv("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
