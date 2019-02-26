@@ -1,1 +1,1 @@
-web: python commit-gypsum.py
+web: python --version
